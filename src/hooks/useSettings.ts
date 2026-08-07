@@ -22,6 +22,8 @@ export interface WeddingSettings {
   dress_code_title: string;
   dress_code_subtitle: string;
   forbidden_colors: string[];
+  rsvp_deadline_date: string;
+  rsvp_deadline_time: string;
 }
 
 export const defaultSettings: WeddingSettings = {
@@ -44,7 +46,9 @@ export const defaultSettings: WeddingSettings = {
   music_url: '',
   dress_code_title: 'Elegante',
   dress_code_subtitle: 'Por favor, evitar los colores bordo y blanco.',
-  forbidden_colors: ['#800020', '#FFFFFF']
+  forbidden_colors: ['#800020', '#FFFFFF'],
+  rsvp_deadline_date: '2026-10-10',
+  rsvp_deadline_time: '23:59'
 };
 
 export function useSettings() {

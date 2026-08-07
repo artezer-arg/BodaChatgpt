@@ -10,6 +10,8 @@ interface InteractiveCardsProps {
   weddingTime: string;
   locationName: string;
   locationAddress: string;
+  rsvpDeadlineDate: string;
+  rsvpDeadlineTime: string;
 }
 
 export function InteractiveCards({ 
@@ -18,7 +20,9 @@ export function InteractiveCards({
   weddingDate, 
   weddingTime, 
   locationName, 
-  locationAddress 
+  locationAddress,
+  rsvpDeadlineDate,
+  rsvpDeadlineTime
 }: InteractiveCardsProps) {
   // Modal states
   const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'photos' | 'calendar' | null>(null);
@@ -30,8 +34,8 @@ export function InteractiveCards({
   const [rsvpCountdown, setRsvpCountdown] = useState<string>('');
 
   useEffect(() => {
-    const cleanTime = weddingTime.slice(0, 5);
-    const targetIso = `${weddingDate}T${cleanTime}:00-03:00`;
+    const cleanTime = rsvpDeadlineTime.slice(0, 5);
+    const targetIso = `${rsvpDeadlineDate}T${cleanTime}:00-03:00`;
     const targetTimestamp = new Date(targetIso).getTime();
 
     const updateCountdown = () => {
@@ -39,7 +43,7 @@ export function InteractiveCards({
       const distance = targetTimestamp - now;
 
       if (isNaN(targetTimestamp) || distance < 0) {
-        setRsvpCountdown('¡Llegó nuestro gran día!');
+        setRsvpCountdown('Plazo de confirmación finalizado');
         return;
       }
 
@@ -54,7 +58,7 @@ export function InteractiveCards({
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, [weddingDate, weddingTime]);
+  }, [rsvpDeadlineDate, rsvpDeadlineTime]);
 
   // Card 1: Copy Alias State
   const [copied, setCopied] = useState(false);

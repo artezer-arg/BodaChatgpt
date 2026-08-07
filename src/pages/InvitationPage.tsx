@@ -72,6 +72,8 @@ export function InvitationPage() {
           weddingTime={settings.wedding_time}
           locationName={settings.location_name}
           locationAddress={settings.location_address}
+          rsvpDeadlineDate={settings.rsvp_deadline_date}
+          rsvpDeadlineTime={settings.rsvp_deadline_time}
         />
 
         {/* Sección Sólo Adultos */}

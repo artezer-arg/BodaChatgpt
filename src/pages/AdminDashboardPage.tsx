@@ -51,7 +51,9 @@ export function AdminDashboardPage() {
     finalMessage: '',
     musicUrl: '',
     dressCodeTitle: '',
-    dressCodeSubtitle: ''
+    dressCodeSubtitle: '',
+    rsvpDeadlineDate: '',
+    rsvpDeadlineTime: ''
   });
   const [savingSettings, setSavingSettings] = useState(false);
   const [musicUploading, setMusicUploading] = useState(false);
@@ -74,7 +76,9 @@ export function AdminDashboardPage() {
         finalMessage: initialSettings.final_message,
         musicUrl: initialSettings.music_url || '',
         dressCodeTitle: initialSettings.dress_code_title,
-        dressCodeSubtitle: initialSettings.dress_code_subtitle
+        dressCodeSubtitle: initialSettings.dress_code_subtitle,
+        rsvpDeadlineDate: initialSettings.rsvp_deadline_date || '2026-10-10',
+        rsvpDeadlineTime: initialSettings.rsvp_deadline_time ? initialSettings.rsvp_deadline_time.slice(0, 5) : '23:59'
       });
     }
   }, [initialSettings]);
@@ -101,7 +105,9 @@ export function AdminDashboardPage() {
           final_message: formSettings.finalMessage,
           music_url: formSettings.musicUrl || null,
           dress_code_title: formSettings.dressCodeTitle,
-          dress_code_subtitle: formSettings.dressCodeSubtitle
+          dress_code_subtitle: formSettings.dressCodeSubtitle,
+          rsvp_deadline_date: formSettings.rsvpDeadlineDate,
+          rsvp_deadline_time: `${formSettings.rsvpDeadlineTime}:00`
         })
         .eq('id', 1);
 
@@ -465,6 +471,30 @@ export function AdminDashboardPage() {
                       className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
                       value={formSettings.weddingTime} 
                       onChange={e => setFormSettings(prev => ({ ...prev, weddingTime: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                {/* Fecha y hora límite para RSVP */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-bold text-sage-600 uppercase">Fecha Límite Confirmación (RSVP)</label>
+                    <input 
+                      type="date" 
+                      required 
+                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                      value={formSettings.rsvpDeadlineDate} 
+                      onChange={e => setFormSettings(prev => ({ ...prev, rsvpDeadlineDate: e.target.value }))}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-bold text-sage-600 uppercase">Hora Límite Confirmación (RSVP)</label>
+                    <input 
+                      type="time" 
+                      required 
+                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                      value={formSettings.rsvpDeadlineTime} 
+                      onChange={e => setFormSettings(prev => ({ ...prev, rsvpDeadlineTime: e.target.value }))}
                     />
                   </div>
                 </div>

@@ -25,6 +25,8 @@ de nuestra historia”',
   dress_code_title text not null default 'Elegante',
   dress_code_subtitle text not null default 'Por favor, evitar los colores bordo y blanco.',
   forbidden_colors jsonb not null default '["#800020", "#FFFFFF"]'::jsonb,
+  rsvp_deadline_date date not null default '2026-10-10',
+  rsvp_deadline_time time not null default '23:59:00',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   constraint single_row check (id = 1)
 );
@@ -117,3 +119,8 @@ create policy "Allow public insert to photos" on photos
 
 create policy "Allow authenticated read/write access to photos" on photos
   for all using (auth.role() = 'authenticated');
+
+-- MIGRATION HELPER: Run these queries in your Supabase SQL Editor if you already initialized the database previously:
+-- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_date date NOT null DEFAULT '2026-10-10';
+-- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_time time NOT null DEFAULT '23:59:00';
+
