@@ -4,6 +4,7 @@ import { DateTime } from '../components/Invitation/DateTime';
 import { CeremonyParty } from '../components/Invitation/CeremonyParty';
 import { Countdown } from '../components/Invitation/Countdown';
 import { RomancePhrase } from '../components/Invitation/RomancePhrase';
+import { GiftSection } from '../components/Invitation/GiftSection';
 import { InteractiveCards } from '../components/Invitation/InteractiveCards';
 import { AdultsOnly } from '../components/Invitation/AdultsOnly';
 import { DressCodeSection } from '../components/Invitation/DressCodeSection';
@@ -64,12 +65,16 @@ export function InvitationPage() {
           phrase={settings.phrase}
         />
 
-        {/* 6. Tarjetas Interactivas */}
-        <InteractiveCards 
+        {/* Regalos (Sección Independiente) */}
+        <GiftSection 
           bankAlias={settings.bank_alias}
           bankCbu={settings.bank_cbu}
           bankOwner={settings.bank_owner}
           bankName={settings.bank_name}
+        />
+
+        {/* 6. Tarjetas Interactivas */}
+        <InteractiveCards 
           instagramUrl={settings.instagram_url}
           weddingDate={settings.wedding_date}
           weddingTime={settings.wedding_time}
