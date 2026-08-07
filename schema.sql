@@ -13,9 +13,10 @@ create table if not exists settings (
   location_name text not null default 'EVENTOS LAS MORAS',
   location_address text not null default 'Mateo Blanco 369, Campana, Buenos Aires',
   maps_url text not null default 'https://maps.app.goo.gl/A7obpbcwitPRKooK7',
-  bank_alias text not null default 'PAMEYNESTOR.BODA',
-  bank_cbu text default '',
-  bank_owner text default '',
+  bank_alias text not null default 'casamiento.nestor.pame',
+  bank_cbu text default '0070000000000000000000',
+  bank_owner text default 'Nestor y Pame',
+  bank_name text not null default 'Banco Galicia',
   instagram_url text not null default 'https://instagram.com/',
   phrase text not null default '“Y así, sin buscarte, te elegí.
 Y así, sin pensarlo, me quedé.”',
@@ -123,4 +124,6 @@ create policy "Allow authenticated read/write access to photos" on photos
 -- MIGRATION HELPER: Run these queries in your Supabase SQL Editor if you already initialized the database previously:
 -- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_date date NOT null DEFAULT '2026-10-10';
 -- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_time time NOT null DEFAULT '23:59:00';
+-- ALTER TABLE settings ADD COLUMN IF NOT EXISTS bank_name text NOT null DEFAULT 'Banco Galicia';
+-- UPDATE settings SET bank_cbu = '0070000000000000000000', bank_owner = 'Nestor y Pame', bank_alias = 'casamiento.nestor.pame' WHERE id = 1;
 

@@ -15,6 +15,7 @@ export interface WeddingSettings {
   bank_alias: string;
   bank_cbu: string;
   bank_owner: string;
+  bank_name: string;
   instagram_url: string;
   phrase: string;
   final_message: string;
@@ -37,9 +38,10 @@ export const defaultSettings: WeddingSettings = {
   location_name: 'EVENTOS LAS MORAS',
   location_address: 'Mateo Blanco 369, Campana, Buenos Aires',
   maps_url: 'https://maps.app.goo.gl/A7obpbcwitPRKooK7',
-  bank_alias: 'PAMEYNESTOR.BODA',
-  bank_cbu: '',
-  bank_owner: '',
+  bank_alias: 'casamiento.nestor.pame',
+  bank_cbu: '0070000000000000000000',
+  bank_owner: 'Nestor y Pame',
+  bank_name: 'Banco Galicia',
   instagram_url: 'https://instagram.com/',
   phrase: '“Y así, sin buscarte, te elegí.\nY así, sin pensarlo, me quedé.”',
   final_message: '“Gracias por ser parte\nde nuestra historia”',

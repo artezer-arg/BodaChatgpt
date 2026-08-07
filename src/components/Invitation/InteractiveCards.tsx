@@ -5,6 +5,9 @@ import { Toast } from '../Base/Toast';
 
 interface InteractiveCardsProps {
   bankAlias: string;
+  bankCbu: string;
+  bankOwner: string;
+  bankName: string;
   instagramUrl: string;
   weddingDate: string;
   weddingTime: string;
@@ -16,6 +19,9 @@ interface InteractiveCardsProps {
 
 export function InteractiveCards({ 
   bankAlias, 
+  bankCbu, 
+  bankOwner, 
+  bankName,
   instagramUrl, 
   weddingDate, 
   weddingTime, 
@@ -25,7 +31,7 @@ export function InteractiveCards({
   rsvpDeadlineTime
 }: InteractiveCardsProps) {
   // Modal states
-  const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'photos' | 'calendar' | null>(null);
+  const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'photos' | 'calendar' | 'gift' | null>(null);
   
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -382,11 +388,11 @@ export function InteractiveCards({
         <h3>REGALOS</h3>
         <p>Tu presencia es nuestro mejor regalo, pero si deseás hacernos un obsequio:</p>
         <button 
-          onClick={handleCopyAlias}
+          onClick={() => setActiveModal('gift')}
           className="invite-button"
-          id="btn-copiar-alias"
+          id="btn-regalos"
         >
-          {copied ? 'COPIADO' : 'COPIAR ALIAS'}
+          VER DATOS
         </button>
       </article>
 
@@ -857,6 +863,51 @@ export function InteractiveCards({
             </button>
           </form>
         )}
+      </Modal>
+
+      {/* 5. Modal Regalos (Datos de Transferencia) */}
+      <Modal 
+        isOpen={activeModal === 'gift'} 
+        onClose={() => setActiveModal(null)} 
+        title="Datos de cuenta"
+      >
+        <div>
+          <div className="bank-card">
+            <div className="bank-row">
+              <span className="bank-label">Banco</span>
+              <span className="bank-value">{bankName}</span>
+            </div>
+            
+            <div className="bank-row">
+              <span className="bank-label">Titular</span>
+              <span className="bank-value">{bankOwner}</span>
+            </div>
+            
+            <div className="bank-col">
+              <span className="bank-label">CBU / CVU</span>
+              <span className="bank-value" style={{ wordBreak: 'break-all', fontSize: '12px' }}>
+                {bankCbu}
+              </span>
+            </div>
+            
+            <div className="bank-alias-box">
+              <span className="bank-alias-label">Alias</span>
+              <span className="bank-alias-value">{bankAlias}</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleCopyAlias}
+            className="dark-pill-button"
+            id="btn-modal-copiar-alias"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '2px', width: '14px', height: '14px', marginRight: '6px' }}>
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            {copied ? 'ALIAS COPIADO' : 'COPIAR ALIAS'}
+          </button>
+        </div>
       </Modal>
 
       {/* Toast popup */}

@@ -67,6 +67,9 @@ export function InvitationPage() {
         {/* 6. Tarjetas Interactivas */}
         <InteractiveCards 
           bankAlias={settings.bank_alias}
+          bankCbu={settings.bank_cbu}
+          bankOwner={settings.bank_owner}
+          bankName={settings.bank_name}
           instagramUrl={settings.instagram_url}
           weddingDate={settings.wedding_date}
           weddingTime={settings.wedding_time}

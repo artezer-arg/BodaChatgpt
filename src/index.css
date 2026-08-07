@@ -708,3 +708,116 @@ blockquote {
     max-width: calc(50% - 10px);
   }
 }
+
+/* Gift Modal Styles */
+.bank-card {
+  background: #fff;
+  border: 1px solid #e1e7de;
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.bank-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f3ee;
+  padding-bottom: 12px;
+}
+
+.bank-row:last-of-type {
+  border-bottom: none;
+}
+
+.bank-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: #a48b53;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bank-value {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.bank-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid #f0f3ee;
+  padding-bottom: 12px;
+}
+
+.bank-alias-box {
+  background: #f7f6f0;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bank-alias-label {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  color: #a48b53;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bank-alias-value {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.dark-pill-button {
+  background: #2e3a31;
+  color: #fff;
+  border-radius: 50px;
+  padding: 14px 28px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(46, 58, 49, 0.2);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.dark-pill-button:hover {
+  background: #232c25;
+  transform: translateY(-1px);
+}
+
+.dark-pill-button:active {
+  transform: translateY(0);
+}
+
+.dark-pill-button svg {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2px;
+  width: 14px;
+  height: 14px;
+}

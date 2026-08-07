@@ -46,6 +46,9 @@ export function AdminDashboardPage() {
     locationAddress: '',
     mapsUrl: '',
     bankAlias: '',
+    bankCbu: '',
+    bankOwner: '',
+    bankName: '',
     instagramUrl: '',
     phrase: '',
     finalMessage: '',
@@ -71,6 +74,9 @@ export function AdminDashboardPage() {
         locationAddress: initialSettings.location_address,
         mapsUrl: initialSettings.maps_url,
         bankAlias: initialSettings.bank_alias,
+        bankCbu: initialSettings.bank_cbu || '',
+        bankOwner: initialSettings.bank_owner || '',
+        bankName: initialSettings.bank_name || '',
         instagramUrl: initialSettings.instagram_url,
         phrase: initialSettings.phrase,
         finalMessage: initialSettings.final_message,
@@ -100,6 +106,9 @@ export function AdminDashboardPage() {
           location_address: formSettings.locationAddress,
           maps_url: formSettings.mapsUrl,
           bank_alias: formSettings.bankAlias,
+          bank_cbu: formSettings.bankCbu,
+          bank_owner: formSettings.bankOwner,
+          bank_name: formSettings.bankName,
           instagram_url: formSettings.instagramUrl,
           phrase: formSettings.phrase,
           final_message: formSettings.finalMessage,
@@ -591,37 +600,81 @@ export function AdminDashboardPage() {
                   </div>
                 </div>
 
-                {/* Regalos & Dress code */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-bold text-sage-600 uppercase">Alias Bancario</label>
-                    <input 
-                      type="text" 
-                      required 
-                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
-                      value={formSettings.bankAlias} 
-                      onChange={e => setFormSettings(prev => ({ ...prev, bankAlias: e.target.value }))}
-                    />
+                {/* Datos de Transferencia Bancaria */}
+                <div className="border border-sage-100 rounded-xl p-4 bg-sage-50/10 flex flex-col gap-4">
+                  <h4 className="text-xs font-bold text-[#2C3531] flex items-center gap-1.5">
+                    💰 Datos de Transferencia (Regalos)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">Nombre del Banco</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.bankName} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, bankName: e.target.value }))}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">Titular de la Cuenta</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.bankOwner} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, bankOwner: e.target.value }))}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">CBU / CVU</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.bankCbu} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, bankCbu: e.target.value }))}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">Alias</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.bankAlias} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, bankAlias: e.target.value }))}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] font-bold text-sage-600 uppercase">Dress Code (Título)</label>
-                    <input 
-                      type="text" 
-                      required 
-                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
-                      value={formSettings.dressCodeTitle} 
-                      onChange={e => setFormSettings(prev => ({ ...prev, dressCodeTitle: e.target.value }))}
-                    />
-                  </div>
-                  <div className="flex flex-col sm:col-span-2 gap-1">
-                    <label className="text-[10px] font-bold text-sage-600 uppercase">Dress Code (Subtítulo - Advertencia de Colores)</label>
-                    <input 
-                      type="text" 
-                      required 
-                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
-                      value={formSettings.dressCodeSubtitle} 
-                      onChange={e => setFormSettings(prev => ({ ...prev, dressCodeSubtitle: e.target.value }))}
-                    />
+                </div>
+
+                {/* Dress code */}
+                <div className="border border-sage-100 rounded-xl p-4 bg-sage-50/10 flex flex-col gap-4">
+                  <h4 className="text-xs font-bold text-[#2C3531] flex items-center gap-1.5">
+                    👔 Vestimenta (Dress Code)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">Dress Code (Título)</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.dressCodeTitle} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, dressCodeTitle: e.target.value }))}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-sage-600 uppercase">Dress Code (Subtítulo)</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                        value={formSettings.dressCodeSubtitle} 
+                        onChange={e => setFormSettings(prev => ({ ...prev, dressCodeSubtitle: e.target.value }))}
+                      />
+                    </div>
                   </div>
                 </div>
 
