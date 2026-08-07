@@ -584,7 +584,7 @@ blockquote {
   white-space: nowrap;
 }
 
-@media (width <= 720px) {
+@media (max-width: 720px) {
   .botanical {
     opacity: .78;
     width: 150vw;
@@ -700,7 +700,7 @@ blockquote {
   }
 }
 
-@media (width >= 721px) {
+@media (min-width: 721px) {
   .card-double {
     grid-column: span 2;
     width: 100%;
@@ -729,7 +729,7 @@ blockquote {
   line-height: 1.8 !important;
 }
 
-@media (width <= 720px) {
+@media (max-width: 720px) {
   .card-double-grid {
     grid-template-columns: 1fr;
     gap: 16px;
