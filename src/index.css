@@ -278,9 +278,11 @@ blockquote {
 }
 
 .cards {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   display: grid;
+  max-width: 760px;
+  margin-inline: auto;
 }
 
 .card {
@@ -664,8 +666,11 @@ blockquote {
   }
 }
 
-@media (width >= 721px) and (width <= 940px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
+@media (width >= 721px) {
+  .cards > article:last-child {
+    grid-column: span 2;
+    justify-self: center;
+    width: 100%;
+    max-width: calc(50% - 10px);
   }
 }
