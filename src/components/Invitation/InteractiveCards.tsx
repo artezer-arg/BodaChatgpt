@@ -379,46 +379,52 @@ export function InteractiveCards({
   return (
     <section className="cards section">
       {/* Card 1: REGALOS */}
-      <article className="card" style={{ padding: '22px 18px', minHeight: '340px' }}>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '15px' }}>REGALOS</h3>
-        <p style={{ fontSize: '10.5px', margin: '0 0 12px 0', lineHeight: '1.5' }}>
-          Tu presencia es nuestro mejor regalo, pero si deseás hacernos un obsequio:
-        </p>
-        
-        <div className="bank-card" style={{ width: '100%', padding: '12px 14px', gap: '10px', boxShadow: 'none', border: '1px solid var(--line)', background: '#fff', borderRadius: '8px' }}>
-          <div className="bank-row" style={{ paddingBottom: '6px' }}>
-            <span className="bank-label" style={{ fontSize: '9px' }}>Banco</span>
-            <span className="bank-value" style={{ fontSize: '11px' }}>{bankName}</span>
+      <article className="card card-double" style={{ padding: '24px 28px', minHeight: 'auto' }}>
+        <div className="card-double-grid">
+          <div className="card-double-left">
+            <h3>REGALOS</h3>
+            <p>
+              Tu presencia es nuestro mejor regalo, pero si deseás hacernos un obsequio, podés realizar una transferencia bancaria a nuestra cuenta:
+            </p>
           </div>
           
-          <div className="bank-row" style={{ paddingBottom: '6px' }}>
-            <span className="bank-label" style={{ fontSize: '9px' }}>Titular</span>
-            <span className="bank-value" style={{ fontSize: '11px' }}>{bankOwner}</span>
-          </div>
-          
-          <div className="bank-col" style={{ paddingBottom: '6px', gap: '3px' }}>
-            <span className="bank-label" style={{ fontSize: '9px' }}>CBU / CVU</span>
-            <span className="bank-value" style={{ fontSize: '11px', wordBreak: 'break-all' }}>{bankCbu}</span>
-          </div>
-          
-          <div className="bank-alias-box" style={{ padding: '8px', gap: '2px' }}>
-            <span className="bank-alias-label" style={{ fontSize: '8px' }}>Alias</span>
-            <span className="bank-alias-value" style={{ fontSize: '13px' }}>{bankAlias}</span>
+          <div className="card-double-right">
+            <div className="bank-card" style={{ width: '100%', padding: '12px 14px', gap: '10px', boxShadow: 'none', border: '1px solid var(--line)', background: '#fff', borderRadius: '8px' }}>
+              <div className="bank-row" style={{ paddingBottom: '6px' }}>
+                <span className="bank-label" style={{ fontSize: '9px' }}>Banco</span>
+                <span className="bank-value" style={{ fontSize: '11px' }}>{bankName}</span>
+              </div>
+              
+              <div className="bank-row" style={{ paddingBottom: '6px' }}>
+                <span className="bank-label" style={{ fontSize: '9px' }}>Titular</span>
+                <span className="bank-value" style={{ fontSize: '11px' }}>{bankOwner}</span>
+              </div>
+              
+              <div className="bank-col" style={{ paddingBottom: '6px', gap: '3px' }}>
+                <span className="bank-label" style={{ fontSize: '9px' }}>CBU / CVU</span>
+                <span className="bank-value" style={{ fontSize: '11px', wordBreak: 'break-all' }}>{bankCbu}</span>
+              </div>
+              
+              <div className="bank-alias-box" style={{ padding: '8px', gap: '2px' }}>
+                <span className="bank-alias-label" style={{ fontSize: '8px' }}>Alias</span>
+                <span className="bank-alias-value" style={{ fontSize: '13px' }}>{bankAlias}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCopyAlias}
+              className="dark-pill-button"
+              id="btn-copiar-alias"
+              style={{ marginTop: '14px', padding: '10px 16px', minHeight: '38px', fontSize: '10px', width: '100%' }}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '2px', width: '12px', height: '12px', marginRight: '6px' }}>
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              {copied ? 'ALIAS COPIADO' : 'COPIAR ALIAS'}
+            </button>
           </div>
         </div>
-
-        <button
-          onClick={handleCopyAlias}
-          className="dark-pill-button"
-          id="btn-copiar-alias"
-          style={{ marginTop: '14px', padding: '10px 16px', minHeight: '38px', fontSize: '10px', width: '100%' }}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '2px', width: '12px', height: '12px', marginRight: '6px' }}>
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-          </svg>
-          {copied ? 'ALIAS COPIADO' : 'COPIAR ALIAS'}
-        </button>
       </article>
 
       {/* Card 2: SUBÍ TUS FOTOS */}
