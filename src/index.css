@@ -392,8 +392,8 @@ blockquote {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  min-height: 620px;
-  padding-top: 230px;
+  min-height: 750px;
+  padding-top: 380px;
   display: flex;
 }
 
