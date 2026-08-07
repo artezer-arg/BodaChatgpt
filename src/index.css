@@ -98,7 +98,7 @@
 
 .botanical-bottom {
   opacity: .62;
-  bottom: -130px;
+  bottom: -280px;
   transform: translate(-50%) rotate(180deg);
 }
 
@@ -390,10 +390,9 @@ blockquote {
 .closing {
   text-align: center;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   min-height: 620px;
-  padding-bottom: 140px;
   display: flex;
 }
 
@@ -589,6 +588,9 @@ blockquote {
   .botanical {
     opacity: .78;
     width: 150vw;
+  }
+  .botanical-bottom {
+    bottom: -320px;
   }
   .hero {
     min-height: 690px;
