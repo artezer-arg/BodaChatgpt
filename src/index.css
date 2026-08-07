@@ -390,9 +390,10 @@ blockquote {
 .closing {
   text-align: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   min-height: 620px;
+  padding-bottom: 140px;
   display: flex;
 }
 
