@@ -621,11 +621,45 @@ blockquote {
     font-size: 7px;
   }
   .cards {
-    grid-template-columns: 1fr;
-    max-width: 430px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 100%;
+  }
+  .cards > article:last-child {
+    grid-column: span 2;
+    justify-self: center;
+    width: 100%;
+    max-width: calc(50% - 6px);
   }
   .card {
-    min-height: 260px;
+    min-height: 210px;
+    padding: 16px 12px 14px;
+  }
+  .card h3 {
+    font-size: 13px;
+    margin: 6px 0;
+    letter-spacing: .08em;
+  }
+  .card p {
+    font-size: 10px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .card .invite-button {
+    font-size: 9px;
+    padding: 0 12px;
+    min-height: 34px;
+    width: 100%;
+  }
+  .card .icon-wash {
+    width: 48px;
+    height: 40px;
+    margin-bottom: 4px;
+  }
+  .card .icon-wash svg {
+    width: 20px;
+    height: 20px;
   }
   .dress {
     align-items: flex-start;
