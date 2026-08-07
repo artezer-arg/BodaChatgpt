@@ -848,6 +848,21 @@ export function InteractiveCards({
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
+
+      {/* Floating RSVP Button */}
+      {activeModal !== 'rsvp' && (
+        <button 
+          onClick={() => setActiveModal('rsvp')}
+          className="rsvp-floating-btn"
+          id="btn-rsvp-floating"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '1.5px', width: '16px', height: '16px' }}>
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3 7 9 6 9-6" />
+          </svg>
+          CONFIRMAR ASISTENCIA
+        </button>
+      )}
     </section>
   );
 }

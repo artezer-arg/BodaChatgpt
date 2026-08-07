@@ -513,6 +513,50 @@ blockquote {
   display: grid;
 }
 
+/* Floating RSVP button styles */
+@keyframes rsvpPulse {
+  0%, 100% {
+    transform: translate(-50%, 0) scale(1);
+    box-shadow: 0 8px 25px rgba(128, 150, 128, 0.4);
+  }
+  50% {
+    transform: translate(-50%, 0) scale(1.04);
+    box-shadow: 0 8px 30px rgba(128, 150, 128, 0.7);
+  }
+}
+
+.rsvp-floating-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  background: var(--sage);
+  color: #fff;
+  border-radius: 50px;
+  font: 500 11px/1.4 var(--sans);
+  letter-spacing: .15em;
+  padding: 13px 28px;
+  cursor: pointer;
+  border: 1px solid var(--sage);
+  box-shadow: 0 8px 25px rgba(128, 150, 128, 0.4);
+  animation: rsvpPulse 2.8s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.rsvp-floating-btn:hover {
+  background: #697f6c;
+}
+
+.rsvp-floating-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
 @media (width <= 720px) {
   .botanical {
     opacity: .78;
@@ -585,6 +629,10 @@ blockquote {
   }
   .section {
     width: calc(100% - 28px);
+  }
+  .toast {
+    white-space: nowrap;
+    bottom: 80px;
   }
 }
 
