@@ -448,25 +448,6 @@ export function InteractiveCards({
         </button>
       </article>
 
-      {/* Card 5: CONFIRMAR ASISTENCIA */}
-      <article className="card">
-        <div className="icon-wash">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="m3 7 9 6 9-6" />
-          </svg>
-        </div>
-        <h3>CONFIRMAR ASISTENCIA</h3>
-        <p>Confirmá tu asistencia completando el formulario.</p>
-        <button 
-          onClick={() => setActiveModal('rsvp')}
-          className="invite-button"
-          id="btn-confirmar-asistencia"
-        >
-          CONFIRMAR
-        </button>
-      </article>
-
       {/* Card 6: INSTAGRAM */}
       <article className="card">
         <div className="icon-wash">
