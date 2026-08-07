@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import { Modal } from '../Base/Modal';
 import { Toast } from '../Base/Toast';
@@ -25,6 +25,36 @@ export function InteractiveCards({
   
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // RSVP Floating Countdown State
+  const [rsvpCountdown, setRsvpCountdown] = useState<string>('');
+
+  useEffect(() => {
+    const cleanTime = weddingTime.slice(0, 5);
+    const targetIso = `${weddingDate}T${cleanTime}:00-03:00`;
+    const targetTimestamp = new Date(targetIso).getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetTimestamp - now;
+
+      if (isNaN(targetTimestamp) || distance < 0) {
+        setRsvpCountdown('¡Llegó nuestro gran día!');
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setRsvpCountdown(`Faltan ${days}d ${hours}h ${minutes}m ${seconds}s para confirmar`);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [weddingDate, weddingTime]);
 
   // Card 1: Copy Alias State
   const [copied, setCopied] = useState(false);
@@ -849,19 +879,27 @@ export function InteractiveCards({
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* Floating RSVP Button */}
+      {/* Floating RSVP Button with Countdown */}
       {activeModal !== 'rsvp' && (
-        <button 
-          onClick={() => setActiveModal('rsvp')}
-          className="rsvp-floating-btn"
-          id="btn-rsvp-floating"
+        <div 
+          className="rsvp-floating-container"
+          id="rsvp-floating-wrapper"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '1.5px', width: '16px', height: '16px' }}>
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="m3 7 9 6 9-6" />
-          </svg>
-          CONFIRMAR ASISTENCIA
-        </button>
+          <button 
+            onClick={() => setActiveModal('rsvp')}
+            className="rsvp-floating-btn"
+            id="btn-rsvp-floating"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" style={{ stroke: 'currentColor', fill: 'none', strokeWidth: '1.5px', width: '16px', height: '16px' }}>
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+            CONFIRMAR ASISTENCIA
+          </button>
+          <span className="rsvp-countdown-text">
+            {rsvpCountdown}
+          </span>
+        </div>
       )}
     </section>
   );

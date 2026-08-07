@@ -516,21 +516,30 @@ blockquote {
 /* Floating RSVP button styles */
 @keyframes rsvpPulse {
   0%, 100% {
-    transform: translate(-50%, 0) scale(1);
+    transform: scale(1);
     box-shadow: 0 8px 25px rgba(128, 150, 128, 0.4);
   }
   50% {
-    transform: translate(-50%, 0) scale(1.04);
+    transform: scale(1.04);
     box-shadow: 0 8px 30px rgba(128, 150, 128, 0.7);
   }
 }
 
-.rsvp-floating-btn {
+.rsvp-floating-container {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.rsvp-floating-btn {
+  pointer-events: auto;
   background: var(--sage);
   color: #fff;
   border-radius: 50px;
@@ -555,6 +564,22 @@ blockquote {
 .rsvp-floating-btn svg {
   width: 14px;
   height: 14px;
+}
+
+.rsvp-countdown-text {
+  pointer-events: auto;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 500;
+  color: #4b5c50;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(253, 252, 248, 0.95);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
 }
 
 @media (width <= 720px) {
@@ -632,7 +657,10 @@ blockquote {
   }
   .toast {
     white-space: nowrap;
-    bottom: 80px;
+    bottom: 95px; /* pushed up slightly to avoid rsvp countdown overlapping */
+  }
+  .rsvp-floating-container {
+    bottom: 15px;
   }
 }
 
