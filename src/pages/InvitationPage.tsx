@@ -5,6 +5,7 @@ import { CeremonyParty } from '../components/Invitation/CeremonyParty';
 import { Countdown } from '../components/Invitation/Countdown';
 import { RomancePhrase } from '../components/Invitation/RomancePhrase';
 import { InteractiveCards } from '../components/Invitation/InteractiveCards';
+import { AdultsOnly } from '../components/Invitation/AdultsOnly';
 import { DressCodeSection } from '../components/Invitation/DressCodeSection';
 import { Footer } from '../components/Invitation/Footer';
 import { MusicPlayer } from '../components/Invitation/MusicPlayer';
@@ -72,6 +73,9 @@ export function InvitationPage() {
           locationName={settings.location_name}
           locationAddress={settings.location_address}
         />
+
+        {/* Sección Sólo Adultos */}
+        <AdultsOnly />
 
         {/* 7. Dress Code */}
         <DressCodeSection 
