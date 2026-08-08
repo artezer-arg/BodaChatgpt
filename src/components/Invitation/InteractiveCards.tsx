@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import { Modal } from '../Base/Modal';
 import { Toast } from '../Base/Toast';
 
 interface InteractiveCardsProps {
+  googleDriveUrl: string;
   instagramUrl: string;
   weddingDate: string;
   weddingTime: string;
@@ -14,6 +15,7 @@ interface InteractiveCardsProps {
 }
 
 export function InteractiveCards({ 
+  googleDriveUrl,
   instagramUrl, 
   weddingDate, 
   weddingTime, 
@@ -23,7 +25,7 @@ export function InteractiveCards({
   rsvpDeadlineTime
 }: InteractiveCardsProps) {
   // Modal states
-  const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'photos' | 'calendar' | null>(null);
+  const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'calendar' | null>(null);
   
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -57,13 +59,6 @@ export function InteractiveCards({
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, [rsvpDeadlineDate, rsvpDeadlineTime]);
-
-  // Card 2: Photos Upload States
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [uploading, setUploading] = useState(false);
-  const [photoError, setPhotoError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Card 3: Suggested Song Form States
   const [songForm, setSongForm] = useState({
@@ -157,97 +152,6 @@ export function InteractiveCards({
     } catch (e) {
       return '';
     }
-  };
-
-  // Photos Actions
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      const validFiles: File[] = [];
-      const invalidExtensions: string[] = [];
-
-      filesArray.forEach(file => {
-        const ext = file.name.split('.').pop()?.toLowerCase();
-        if (ext && ['jpg', 'jpeg', 'png', 'heic'].includes(ext)) {
-          validFiles.push(file);
-        } else {
-          invalidExtensions.push(file.name);
-        }
-      });
-
-      if (invalidExtensions.length > 0) {
-        setPhotoError(`Formato no permitido: ${invalidExtensions.join(', ')}. Solo se permite JPG, JPEG, PNG y HEIC.`);
-      } else {
-        setPhotoError(null);
-      }
-
-      setSelectedFiles(prev => [...prev, ...validFiles]);
-    }
-  };
-
-  const handleUploadPhotos = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedFiles.length === 0) {
-      setPhotoError('Por favor selecciona al menos una fotografía.');
-      return;
-    }
-
-    setUploading(true);
-    setUploadProgress(0);
-    setPhotoError(null);
-
-    let uploadedCount = 0;
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-        const filePath = `user_uploads/${fileName}`;
-
-        // 1. Upload to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from('photos')
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        // 2. Get Public URL
-        const { data: publicUrlData } = supabase.storage
-          .from('photos')
-          .getPublicUrl(filePath);
-
-        const url = publicUrlData.publicUrl;
-
-        // 3. Insert in Database
-        const { error: dbError } = await supabase
-          .from('photos')
-          .insert({
-            url,
-            file_path: filePath,
-            is_approved: false
-          });
-
-        if (dbError) throw dbError;
-
-        uploadedCount++;
-        setUploadProgress(Math.round((uploadedCount / selectedFiles.length) * 100));
-      } catch (err: any) {
-        console.error(err);
-        setPhotoError(`Error subiendo la imagen "${file.name}": ${err.message || err}`);
-        setUploading(false);
-        return;
-      }
-    }
-
-    setUploading(false);
-    setSelectedFiles([]);
-    setToastMessage('Fotos subidas con éxito. Pendientes de aprobación.');
-    setActiveModal(null);
-  };
-
-  const removeSelectedFile = (idx: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
   };
 
   // Song Actions
@@ -372,7 +276,7 @@ export function InteractiveCards({
         <h3>SUBÍ TUS FOTOS</h3>
         <p>Compartí tus mejores momentos del evento con nosotros.</p>
         <button 
-          onClick={() => setActiveModal('photos')}
+          onClick={() => window.open(googleDriveUrl || 'https://drive.google.com', '_blank', 'noopener,noreferrer')}
           className="invite-button"
           id="btn-subir-fotos"
         >
@@ -442,82 +346,6 @@ export function InteractiveCards({
       </article>
 
       {/* --- MODALS --- */}
-
-      {/* 1. Modal Subir Fotos */}
-      <Modal 
-        isOpen={activeModal === 'photos'} 
-        onClose={() => { if (!uploading) { setActiveModal(null); setSelectedFiles([]); setPhotoError(null); } }} 
-        title="Subí tus fotos"
-      >
-        <form onSubmit={handleUploadPhotos}>
-          <p className="form-note" style={{ color: 'var(--sage)', marginBottom: '10px' }}>
-            Elegí las mejores capturas de tu celular o computadora y compartilas con nosotros. Formatos válidos: JPG, PNG, HEIC.
-          </p>
-
-          <div style={{ position: 'relative', border: '1px dashed var(--line)', borderRadius: '5px', padding: '20px', textAlign: 'center', background: '#fff', cursor: 'pointer', marginBottom: '14px' }}>
-            <input 
-              type="file" 
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              multiple 
-              accept="image/png, image/jpeg, image/jpg, image/heic, .heic" 
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
-              disabled={uploading}
-              id="input-file-photos"
-            />
-            <span style={{ fontSize: '12px', color: 'var(--ink)' }}>Hacé click para seleccionar fotos</span>
-            <br />
-            <span style={{ fontSize: '10px', color: 'var(--sage)' }}>Máx. 5 fotos simultáneas</span>
-          </div>
-
-          {photoError && (
-            <p style={{ color: 'red', fontSize: '11px', marginBottom: '10px' }}>
-              {photoError}
-            </p>
-          )}
-
-          {/* List selected files */}
-          {selectedFiles.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '100px', overflowY: 'auto', marginBottom: '14px' }}>
-              {selectedFiles.map((file, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', background: '#fff', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--line)' }}>
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>{file.name}</span>
-                  <button 
-                    type="button" 
-                    onClick={() => removeSelectedFile(idx)}
-                    style={{ color: 'red', border: 0, background: 'none', cursor: 'pointer' }}
-                    disabled={uploading}
-                  >
-                    Quitar
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Uploading Progress */}
-          {uploading && (
-            <div style={{ marginBottom: '14px' }}>
-              <div style={{ width: '100%', backgroundColor: 'var(--pale)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                <div 
-                  style={{ backgroundColor: 'var(--sage)', height: '100%', transition: 'all 0.3s', width: `${uploadProgress}%` }}
-                />
-              </div>
-              <span style={{ fontSize: '10px', display: 'block', textAlign: 'center', marginTop: '4px', color: 'var(--sage)' }}>Subiendo... {uploadProgress}%</span>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={uploading || selectedFiles.length === 0}
-            className="invite-button"
-            id="btn-submit-photos"
-            style={{ width: '100%' }}
-          >
-            {uploading ? 'SUBIENDO...' : 'SUBIR FOTOS'}
-          </button>
-        </form>
-      </Modal>
 
       {/* 2. Modal Sugerir Canción */}
       <Modal 

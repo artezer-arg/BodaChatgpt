@@ -23,6 +23,7 @@ Y así, sin pensarlo, me quedé.”',
   final_message text not null default '“Gracias por ser parte
 de nuestra historia”',
   music_url text default '',
+  google_drive_url text default 'https://drive.google.com',
   dress_code_title text not null default 'Elegante',
   dress_code_subtitle text not null default 'Por favor, evitar los colores bordo y blanco.',
   forbidden_colors jsonb not null default '["#800020", "#FFFFFF"]'::jsonb,
@@ -35,13 +36,13 @@ de nuestra historia”',
 -- Insert default settings row
 insert into settings (
   id, bride_name, groom_name, title, intro_text, wedding_date, wedding_time,
-  location_name, location_address, bank_alias, instagram_url, phrase, final_message,
+  location_name, location_address, bank_alias, google_drive_url, instagram_url, phrase, final_message,
   dress_code_title, dress_code_subtitle, forbidden_colors
 ) values (
   1, 'Pamela', 'Nestor', 'NOS CASAMOS', 'Y QUEREMOS QUE SEAS PARTE
 DE ESTE DÍA TAN ESPECIAL',
   '2026-10-24', '17:50:00', 'EVENTOS LAS MORAS', 'Mateo Blanco 369, Campana, Buenos Aires',
-  'PAMEYNESTOR.BODA', 'https://instagram.com/', '“Y así, sin buscarte, te elegí.
+  'casamiento.nestor.pame', 'https://drive.google.com', 'https://instagram.com/', '“Y así, sin buscarte, te elegí.
 Y así, sin pensarlo, me quedé.”',
   '“Gracias por ser parte
 de nuestra historia”', 'Elegante', 'Por favor, evitar los colores bordo y blanco.',
@@ -125,5 +126,6 @@ create policy "Allow authenticated read/write access to photos" on photos
 -- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_date date NOT null DEFAULT '2026-10-10';
 -- ALTER TABLE settings ADD COLUMN IF NOT EXISTS rsvp_deadline_time time NOT null DEFAULT '23:59:00';
 -- ALTER TABLE settings ADD COLUMN IF NOT EXISTS bank_name text NOT null DEFAULT 'Banco Galicia';
+-- ALTER TABLE settings ADD COLUMN IF NOT EXISTS google_drive_url text DEFAULT 'https://drive.google.com';
 -- UPDATE settings SET bank_cbu = '0070000000000000000000', bank_owner = 'Nestor y Pame', bank_alias = 'casamiento.nestor.pame' WHERE id = 1;
 

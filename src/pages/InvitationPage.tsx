@@ -75,6 +75,7 @@ export function InvitationPage() {
 
         {/* 6. Tarjetas Interactivas */}
         <InteractiveCards 
+          googleDriveUrl={settings.google_drive_url}
           instagramUrl={settings.instagram_url}
           weddingDate={settings.wedding_date}
           weddingTime={settings.wedding_time}

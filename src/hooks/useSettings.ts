@@ -17,6 +17,7 @@ export interface WeddingSettings {
   bank_owner: string;
   bank_name: string;
   instagram_url: string;
+  google_drive_url: string;
   phrase: string;
   final_message: string;
   music_url: string;
@@ -43,6 +44,7 @@ export const defaultSettings: WeddingSettings = {
   bank_owner: 'Nestor y Pame',
   bank_name: 'Banco Galicia',
   instagram_url: 'https://instagram.com/',
+  google_drive_url: 'https://drive.google.com',
   phrase: '“Y así, sin buscarte, te elegí.\nY así, sin pensarlo, me quedé.”',
   final_message: '“Gracias por ser parte\nde nuestra historia”',
   music_url: '',

@@ -50,6 +50,7 @@ export function AdminDashboardPage() {
     bankOwner: '',
     bankName: '',
     instagramUrl: '',
+    googleDriveUrl: '',
     phrase: '',
     finalMessage: '',
     musicUrl: '',
@@ -78,6 +79,7 @@ export function AdminDashboardPage() {
         bankOwner: initialSettings.bank_owner || '',
         bankName: initialSettings.bank_name || '',
         instagramUrl: initialSettings.instagram_url,
+        googleDriveUrl: initialSettings.google_drive_url || 'https://drive.google.com',
         phrase: initialSettings.phrase,
         finalMessage: initialSettings.final_message,
         musicUrl: initialSettings.music_url || '',
@@ -110,6 +112,7 @@ export function AdminDashboardPage() {
           bank_owner: formSettings.bankOwner,
           bank_name: formSettings.bankName,
           instagram_url: formSettings.instagramUrl,
+          google_drive_url: formSettings.googleDriveUrl,
           phrase: formSettings.phrase,
           final_message: formSettings.finalMessage,
           music_url: formSettings.musicUrl || null,
@@ -552,6 +555,16 @@ export function AdminDashboardPage() {
                       className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
                       value={formSettings.instagramUrl} 
                       onChange={e => setFormSettings(prev => ({ ...prev, instagramUrl: e.target.value }))}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-bold text-sage-600 uppercase">Carpeta de Google Drive (Subir Fotos)</label>
+                    <input 
+                      type="url" 
+                      required 
+                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                      value={formSettings.googleDriveUrl} 
+                      onChange={e => setFormSettings(prev => ({ ...prev, googleDriveUrl: e.target.value }))}
                     />
                   </div>
                 </div>
