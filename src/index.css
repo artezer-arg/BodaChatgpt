@@ -156,6 +156,10 @@
   font: 400 95px/.9 var(--serif);
 }
 
+.date-main .time-num {
+  font-size: 58px;
+}
+
 .venue {
   text-align: center;
   padding: 120px 0;
@@ -615,6 +619,9 @@ blockquote {
   }
   .date-main strong {
     font-size: 73px;
+  }
+  .date-main .time-num {
+    font-size: 44px;
   }
   .venue {
     padding: 95px 0;

@@ -66,7 +66,7 @@ export function DateTime({ date, time }: DateTimeProps) {
       </div>
       
       <div className="date-main">
-        <strong>{formatted.time.split(' ')[0]}</strong>
+        <strong className="time-num">{formatted.time.split(' ')[0]}</strong>
         <span>
           {formatted.time.split(' ')[1] || 'HS'}
         </span>
