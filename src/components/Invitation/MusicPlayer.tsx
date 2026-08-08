@@ -8,8 +8,8 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Fallback to local background song, or soundhelix
-  const defaultTrack = '/wedding-music.mp3';
+  // Fallback to a beautiful public domain classical piano track
+  const defaultTrack = 'https://upload.wikimedia.org/wikipedia/commons/1/18/Schumann-kinderszenen-von-fremden-laendern-und-menschen.mp3';
   const trackUrl = musicUrl || defaultTrack;
 
   useEffect(() => {
