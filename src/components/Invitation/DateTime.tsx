@@ -54,7 +54,7 @@ export function DateTime({ date, time }: DateTimeProps) {
       className="date-strip section"
       aria-label="Fecha y horario"
     >
-      <div><span>{formatted.dayName}</span></div>
+      <div><span className="day-name">{formatted.dayName}</span></div>
       
       <div className="date-main">
         <strong>{formatted.dayNum}</strong>
