@@ -23,7 +23,7 @@ Y así, sin pensarlo, me quedé.”',
   final_message text not null default '“Gracias por ser parte
 de nuestra historia”',
   music_url text default '',
-  google_drive_url text default 'https://drive.google.com',
+  google_drive_url text default 'https://docs.google.com/forms/d/e/1FAIpQLSdtFLXyeR6cP8P0IjF5yZUfz4XPs6zUX5tUXf5OJQasBY3AEQ/viewform?usp=header',
   dress_code_title text not null default 'Elegante',
   dress_code_subtitle text not null default 'Por favor, evitar los colores bordo y blanco.',
   forbidden_colors jsonb not null default '["#800020", "#FFFFFF"]'::jsonb,
@@ -42,7 +42,7 @@ insert into settings (
   1, 'Pamela', 'Nestor', 'NOS CASAMOS', 'Y QUEREMOS QUE SEAS PARTE
 DE ESTE DÍA TAN ESPECIAL',
   '2026-10-24', '17:50:00', 'EVENTOS LAS MORAS', 'Mateo Blanco 369, Campana, Buenos Aires',
-  'casamiento.nestor.pame', 'https://drive.google.com', 'https://instagram.com/', '“Y así, sin buscarte, te elegí.
+  'casamiento.nestor.pame', 'https://docs.google.com/forms/d/e/1FAIpQLSdtFLXyeR6cP8P0IjF5yZUfz4XPs6zUX5tUXf5OJQasBY3AEQ/viewform?usp=header', 'https://instagram.com/', '“Y así, sin buscarte, te elegí.
 Y así, sin pensarlo, me quedé.”',
   '“Gracias por ser parte
 de nuestra historia”', 'Elegante', 'Por favor, evitar los colores bordo y blanco.',
