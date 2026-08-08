@@ -697,6 +697,10 @@ export function AdminDashboardPage() {
                     <FileAudio className="w-4 h-4 text-sage-500" /> Cargar Música de Fondo
                   </h4>
                   
+                  <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200/60 rounded-lg p-2.5 leading-relaxed">
+                    ⚠️ <strong>Almacenamiento en Supabase:</strong> Para poder subir archivos MP3 directamente, debés crear un contenedor de almacenamiento público en Supabase. Ve a tu consola de <strong>Supabase &gt; Storage &gt; New Bucket</strong>, llámalo <strong>music</strong> y asegúrate de activar la casilla de <strong>Public Bucket</strong>. Si preferís no hacerlo, podés simplemente pegar cualquier enlace directo a un archivo MP3 de internet en el campo "URL de Música Actual" de abajo.
+                  </p>
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1">
                       <label className="text-[10px] font-bold text-sage-500 uppercase">Cargar archivo de audio (.MP3)</label>
