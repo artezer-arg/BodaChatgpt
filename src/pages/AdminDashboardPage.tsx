@@ -51,6 +51,7 @@ export function AdminDashboardPage() {
     bankName: '',
     instagramUrl: '',
     googleDriveUrl: '',
+    spotifyPlaylistUrl: '',
     phrase: '',
     finalMessage: '',
     musicUrl: '',
@@ -79,7 +80,8 @@ export function AdminDashboardPage() {
         bankOwner: initialSettings.bank_owner || '',
         bankName: initialSettings.bank_name || '',
         instagramUrl: initialSettings.instagram_url,
-        googleDriveUrl: initialSettings.google_drive_url || 'https://drive.google.com',
+        googleDriveUrl: initialSettings.google_drive_url || '',
+        spotifyPlaylistUrl: initialSettings.spotify_playlist_url || 'https://open.spotify.com/playlist/6v4DSTXLcXvtaqdUaNyQtI?si=100f201b2eb04928',
         phrase: initialSettings.phrase,
         finalMessage: initialSettings.final_message,
         musicUrl: initialSettings.music_url || '',
@@ -113,6 +115,7 @@ export function AdminDashboardPage() {
           bank_name: formSettings.bankName,
           instagram_url: formSettings.instagramUrl,
           google_drive_url: formSettings.googleDriveUrl,
+          spotify_playlist_url: formSettings.spotifyPlaylistUrl,
           phrase: formSettings.phrase,
           final_message: formSettings.finalMessage,
           music_url: formSettings.musicUrl || null,
@@ -565,6 +568,16 @@ export function AdminDashboardPage() {
                       className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
                       value={formSettings.googleDriveUrl} 
                       onChange={e => setFormSettings(prev => ({ ...prev, googleDriveUrl: e.target.value }))}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-bold text-sage-600 uppercase">Playlist de Spotify (Sugerencia de Música)</label>
+                    <input 
+                      type="url" 
+                      required 
+                      className="border border-sage-200 rounded-xl px-4 py-2.5 text-xs font-sans"
+                      value={formSettings.spotifyPlaylistUrl} 
+                      onChange={e => setFormSettings(prev => ({ ...prev, spotifyPlaylistUrl: e.target.value }))}
                     />
                   </div>
                 </div>

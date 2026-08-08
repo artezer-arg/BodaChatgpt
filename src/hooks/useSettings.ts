@@ -18,6 +18,7 @@ export interface WeddingSettings {
   bank_name: string;
   instagram_url: string;
   google_drive_url: string;
+  spotify_playlist_url: string;
   phrase: string;
   final_message: string;
   music_url: string;
@@ -45,6 +46,7 @@ export const defaultSettings: WeddingSettings = {
   bank_name: 'Banco Galicia',
   instagram_url: 'https://instagram.com/',
   google_drive_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdtFLXyeR6cP8P0IjF5yZUfz4XPs6zUX5tUXf5OJQasBY3AEQ/viewform?usp=header',
+  spotify_playlist_url: 'https://open.spotify.com/playlist/6v4DSTXLcXvtaqdUaNyQtI?si=100f201b2eb04928',
   phrase: '“Y así, sin buscarte, te elegí.\nY así, sin pensarlo, me quedé.”',
   final_message: '“Gracias por ser parte\nde nuestra historia”',
   music_url: '',

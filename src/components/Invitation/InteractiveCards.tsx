@@ -5,6 +5,7 @@ import { Toast } from '../Base/Toast';
 
 interface InteractiveCardsProps {
   googleDriveUrl: string;
+  spotifyPlaylistUrl: string;
   instagramUrl: string;
   weddingDate: string;
   weddingTime: string;
@@ -16,6 +17,7 @@ interface InteractiveCardsProps {
 
 export function InteractiveCards({ 
   googleDriveUrl,
+  spotifyPlaylistUrl,
   instagramUrl, 
   weddingDate, 
   weddingTime, 
@@ -25,7 +27,7 @@ export function InteractiveCards({
   rsvpDeadlineTime
 }: InteractiveCardsProps) {
   // Modal states
-  const [activeModal, setActiveModal] = useState<'rsvp' | 'song' | 'calendar' | null>(null);
+  const [activeModal, setActiveModal] = useState<'rsvp' | 'calendar' | null>(null);
   
   // Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -59,17 +61,6 @@ export function InteractiveCards({
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, [rsvpDeadlineDate, rsvpDeadlineTime]);
-
-  // Card 3: Suggested Song Form States
-  const [songForm, setSongForm] = useState({
-    suggesterName: '',
-    title: '',
-    artist: '',
-    link: '',
-    comment: ''
-  });
-  const [songLoading, setSongLoading] = useState(false);
-  const [songSuccess, setSongSuccess] = useState(false);
 
   // Card 5: RSVP Form States
   const [rsvpForm, setRsvpForm] = useState({
@@ -151,41 +142,6 @@ export function InteractiveCards({
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Casamiento de Pamela & Nestor")}&dates=${start}/${end}&details=${encodeURIComponent("¡Nos casamos! Queremos que seas parte de este día tan especial.")}&location=${encodeURIComponent(`${locationName}, ${locationAddress}`)}`;
     } catch (e) {
       return '';
-    }
-  };
-
-  // Song Actions
-  const handleSongSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!songForm.suggesterName || !songForm.title || !songForm.artist) {
-      return;
-    }
-
-    setSongLoading(true);
-    try {
-      const { error } = await supabase
-        .from('suggested_songs')
-        .insert({
-          suggester_name: songForm.suggesterName,
-          title: songForm.title,
-          artist: songForm.artist,
-          link: songForm.link || null,
-          comment: songForm.comment || null
-        });
-
-      if (error) throw error;
-
-      setSongSuccess(true);
-      setSongForm({ suggesterName: '', title: '', artist: '', link: '', comment: '' });
-      setTimeout(() => {
-        setSongSuccess(false);
-        setActiveModal(null);
-      }, 2500);
-    } catch (err: any) {
-      console.error(err);
-      setToastMessage('Error al guardar la sugerencia');
-    } finally {
-      setSongLoading(false);
     }
   };
 
@@ -296,7 +252,7 @@ export function InteractiveCards({
         <h3>SUGERÍ CANCIONES</h3>
         <p>Ayudanos a armar la banda sonora de nuestra fiesta.</p>
         <button 
-          onClick={() => setActiveModal('song')}
+          onClick={() => window.open(spotifyPlaylistUrl || 'https://open.spotify.com', '_blank', 'noopener,noreferrer')}
           className="invite-button"
           id="btn-sugerir-canciones"
         >
@@ -346,99 +302,6 @@ export function InteractiveCards({
       </article>
 
       {/* --- MODALS --- */}
-
-      {/* 2. Modal Sugerir Canción */}
-      <Modal 
-        isOpen={activeModal === 'song'} 
-        onClose={() => { if (!songLoading) { setActiveModal(null); setSongSuccess(false); } }} 
-        title="Sugerí canciones"
-      >
-        {songSuccess ? (
-          <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <span style={{ fontSize: '32px' }}>✓</span>
-            <h4 style={{ fontFamily: 'var(--serif)', fontSize: '18px', marginTop: '10px', letterSpacing: '0.1em' }}>¡Gracias!</h4>
-            <p style={{ fontSize: '12px', color: 'var(--sage)' }}>Guardamos tu canción.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSongSubmit}>
-            <p className="form-note" style={{ color: 'var(--sage)', marginBottom: '10px' }}>
-              ¿Qué canción no debería faltar en la fiesta? Sugerila aquí para que el DJ la tenga en cuenta.
-            </p>
-
-            <label htmlFor="suggesterName">
-              Nombre y Apellido *
-              <input
-                type="text"
-                id="suggesterName"
-                required
-                disabled={songLoading}
-                placeholder="Ingresá tu nombre"
-                value={songForm.suggesterName}
-                onChange={e => setSongForm(prev => ({ ...prev, suggesterName: e.target.value }))}
-              />
-            </label>
-
-            <label htmlFor="songTitle">
-              Canción *
-              <input
-                type="text"
-                id="songTitle"
-                required
-                disabled={songLoading}
-                placeholder="Nombre del tema"
-                value={songForm.title}
-                onChange={e => setSongForm(prev => ({ ...prev, title: e.target.value }))}
-              />
-            </label>
-
-            <label htmlFor="songArtist">
-              Artista / Banda *
-              <input
-                type="text"
-                id="songArtist"
-                required
-                disabled={songLoading}
-                placeholder="Quién la interpreta"
-                value={songForm.artist}
-                onChange={e => setSongForm(prev => ({ ...prev, artist: e.target.value }))}
-              />
-            </label>
-
-            <label htmlFor="songLink">
-              Link de Spotify o YouTube
-              <input
-                type="url"
-                id="songLink"
-                disabled={songLoading}
-                placeholder="https://..."
-                value={songForm.link}
-                onChange={e => setSongForm(prev => ({ ...prev, link: e.target.value }))}
-              />
-            </label>
-
-            <label htmlFor="songComment">
-              Mensaje o comentario
-              <textarea
-                id="songComment"
-                disabled={songLoading}
-                placeholder="Ej. ¡Para bailar toda la noche!"
-                value={songForm.comment}
-                onChange={e => setSongForm(prev => ({ ...prev, comment: e.target.value }))}
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={songLoading}
-              className="invite-button"
-              id="btn-submit-song"
-              style={{ width: '100%' }}
-            >
-              {songLoading ? 'GUARDANDO...' : 'SUGERIR CANCIÓN'}
-            </button>
-          </form>
-        )}
-      </Modal>
 
       {/* 3. Modal Agendar */}
       <Modal
