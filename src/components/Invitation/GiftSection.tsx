@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Toast } from '../Base/Toast';
 
 interface GiftSectionProps {
@@ -10,14 +11,29 @@ interface GiftSectionProps {
 }
 
 export function GiftSection({ bankAlias, bankCbu, bankOwner, bankName }: GiftSectionProps) {
+  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const lastTapRef = useRef<number>(0);
 
   const handleCopyAlias = () => {
     navigator.clipboard.writeText(bankAlias);
     setCopied(true);
     setToastMessage('Alias copiado');
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAdminShortcut = () => {
+    navigate('/admin');
+  };
+
+  const handleTouchStart = () => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    if (now - lastTapRef.current < DOUBLE_PRESS_DELAY) {
+      handleAdminShortcut();
+    }
+    lastTapRef.current = now;
   };
 
   return (
@@ -28,7 +44,10 @@ export function GiftSection({ bankAlias, bankCbu, bankOwner, bankName }: GiftSec
         viewport={{ once: true }}
         transition={{ duration: 1.2 }}
         className="sprig"
-        style={{ transform: 'none', fontSize: '32px' }}
+        style={{ transform: 'none', fontSize: '32px', cursor: 'pointer', userSelect: 'none' }}
+        onDoubleClick={handleAdminShortcut}
+        onTouchStart={handleTouchStart}
+        title="Doble clic para administrar"
       >
         🎁
       </motion.div>
