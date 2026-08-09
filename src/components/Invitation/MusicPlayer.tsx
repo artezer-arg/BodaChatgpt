@@ -43,6 +43,45 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     };
   }, []);
 
+  // Auto-play music on the first scroll, touch, or click interaction
+  useEffect(() => {
+    let triggered = false;
+
+    const startMusicOnInteraction = () => {
+      if (triggered) return;
+      
+      const audio = audioRef.current;
+      if (audio) {
+        triggered = true;
+        audio.play()
+          .then(() => {
+            setIsPlaying(true);
+            removeInteractionListeners();
+          })
+          .catch(err => {
+            console.log("Autoplay on interaction blocked or deferred:", err);
+            // reset trigger if it failed so next interaction can try again
+            triggered = false;
+          });
+      }
+    };
+
+    const removeInteractionListeners = () => {
+      window.removeEventListener('scroll', startMusicOnInteraction);
+      window.removeEventListener('touchmove', startMusicOnInteraction);
+      window.removeEventListener('click', startMusicOnInteraction);
+    };
+
+    // Add listeners with passive option for performance
+    window.addEventListener('scroll', startMusicOnInteraction, { passive: true });
+    window.addEventListener('touchmove', startMusicOnInteraction, { passive: true });
+    window.addEventListener('click', startMusicOnInteraction, { passive: true });
+
+    return () => {
+      removeInteractionListeners();
+    };
+  }, [trackUrl]);
+
   const togglePlay = () => {
     if (!audioRef.current) return;
 
