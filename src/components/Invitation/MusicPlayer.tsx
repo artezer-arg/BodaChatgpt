@@ -26,17 +26,30 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
     }
   }, [trackUrl]);
 
+  // Sync state with HTML5 audio play/pause events
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+    };
+  }, []);
+
   const togglePlay = () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
-      setIsPlaying(false);
     } else {
       audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
         .catch(err => {
           console.error("Audio playback blocked or failed:", err);
         });
@@ -46,6 +59,7 @@ export function MusicPlayer({ musicUrl }: MusicPlayerProps) {
   return (
     <div>
       <audio 
+        id="audio-bg-track"
         ref={audioRef} 
         src={trackUrl} 
         loop 

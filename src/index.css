@@ -231,6 +231,28 @@
   width: 17px;
 }
 
+.qty-circle-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--pale);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.qty-circle-btn:hover {
+  background: var(--sage) !important;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+
 .countdown-box {
   background: var(--pale);
   text-align: center;

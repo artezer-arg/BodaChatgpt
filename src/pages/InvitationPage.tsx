@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../hooks/useSettings';
 import { Cover } from '../components/Invitation/Cover';
 import { DateTime } from '../components/Invitation/DateTime';
@@ -13,6 +15,7 @@ import { MusicPlayer } from '../components/Invitation/MusicPlayer';
 
 export function InvitationPage() {
   const { settings, loading } = useSettings();
+  const [showWelcome, setShowWelcome] = useState(true);
 
   if (loading) {
     return (
@@ -105,6 +108,77 @@ export function InvitationPage() {
           musicUrl={settings.music_url}
         />
       </main>
+
+      {/* Welcome Screen to trigger music autoplay */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            className="fixed inset-0 bg-[#fdfcf8] flex flex-col items-center justify-center z-[9999] select-none text-center px-6"
+            style={{ 
+              backgroundImage: 'url("/watercolor_stain.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          >
+            {/* White card overlay */}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="max-w-[420px] w-full border border-sage-200/40 rounded-3xl p-12 bg-[#fdfcf8]/90 backdrop-blur-md shadow-xl flex flex-col items-center gap-6"
+              style={{
+                boxShadow: '0 20px 40px rgba(121, 133, 120, 0.12)',
+                border: '1px solid rgba(220, 227, 218, 0.8)'
+              }}
+            >
+              <h1 
+                className="font-serif text-[42px] leading-tight text-[#2C3531]"
+                style={{ fontFamily: 'var(--serif)', letterSpacing: '0.05em' }}
+              >
+                {settings.bride_name} <br />
+                <span className="text-[28px] font-light font-sans text-sage-400">&</span> <br />
+                {settings.groom_name}
+              </h1>
+              
+              <div className="h-[1px] w-20 bg-sage-200" />
+              
+              <p 
+                className="font-serif text-xs uppercase tracking-[0.2em] text-sage-600"
+                style={{ fontFamily: 'var(--sans)', fontSize: '10px', fontWeight: 300 }}
+              >
+                ¡Te invitamos a compartir <br />
+                nuestro gran día!
+              </p>
+              
+              <button
+                onClick={() => {
+                  setShowWelcome(false);
+                  const audioEl = document.getElementById('audio-bg-track') as HTMLAudioElement;
+                  if (audioEl) {
+                    audioEl.play().catch(e => console.error("No se pudo reproducir la música:", e));
+                  }
+                }}
+                className="mt-4 h-12 px-10 bg-sage-500 hover:bg-sage-600 text-white rounded-full text-xs font-sans tracking-widest uppercase transition-colors cursor-pointer flex items-center justify-center font-medium shadow-sm hover:shadow"
+                style={{ 
+                  fontFamily: 'var(--sans)', 
+                  letterSpacing: '0.15em', 
+                  borderRadius: '50px',
+                  border: 'none',
+                  color: '#fff',
+                  fontWeight: 500,
+                  fontSize: '11px'
+                }}
+              >
+                INGRESAR
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
