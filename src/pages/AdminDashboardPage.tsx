@@ -3,16 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useSettings } from '../hooks/useSettings';
 import { 
-  Settings, Users, Music as MusicIcon, Camera, 
-  LogOut, Save, Search, Download, Trash2, CheckCircle, 
-  FileAudio, ExternalLink, ArrowLeft
+  Settings, Users, LogOut, Save, Search, 
+  Download, Trash2, FileAudio, ArrowLeft
 } from 'lucide-react';
 import { Toast } from '../components/Base/Toast';
 
 export function AdminDashboardPage() {
   const navigate = useNavigate();
   const { settings: initialSettings, refreshSettings } = useSettings();
-  const [activeTab, setActiveTab] = useState<'settings' | 'rsvps' | 'songs' | 'photos'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'rsvps'>('settings');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Auth check
@@ -245,123 +244,32 @@ export function AdminDashboardPage() {
     document.body.removeChild(link);
   };
 
+  const handleDeleteRsvp = async (id: string, name: string) => {
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar la confirmación de "${name}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('rsvps')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setToastMessage(`Confirmación de ${name} eliminada`);
+      fetchRsvps();
+    } catch (err: any) {
+      console.error(err);
+      alert(`Error al eliminar: ${err.message}`);
+    }
+  };
+
   // Metrics helper
   const totalRsvpCount = rsvps.length;
   const attendingCount = rsvps.filter(r => r.attending === true).length;
   const notAttendingCount = rsvps.filter(r => r.attending === false).length;
   const totalGuests = rsvps.reduce((acc, r) => acc + (r.attending ? r.guest_count : 0), 0);
-
-  // --- TAB 3: SUGGESTED SONGS STATES & HANDLERS ---
-  const [songs, setSongs] = useState<any[]>([]);
-  const [loadingSongs, setLoadingSongs] = useState(false);
-
-  const fetchSongs = async () => {
-    setLoadingSongs(true);
-    try {
-      const { data, error } = await supabase
-        .from('suggested_songs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setSongs(data || []);
-    } catch (err: any) {
-      console.error(err);
-    } finally {
-      setLoadingSongs(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 'songs') {
-      fetchSongs();
-    }
-  }, [activeTab]);
-
-  const handleDeleteSong = async (id: string) => {
-    if (!window.confirm('¿Seguro que querés eliminar esta sugerencia?')) return;
-    try {
-      const { error } = await supabase
-        .from('suggested_songs')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      setToastMessage('Canción eliminada');
-      fetchSongs();
-    } catch (err: any) {
-      alert(`Error al eliminar: ${err.message}`);
-    }
-  };
-
-  // --- TAB 4: PHOTOS STATES & HANDLERS ---
-  const [photos, setPhotos] = useState<any[]>([]);
-  const [loadingPhotos, setLoadingPhotos] = useState(false);
-
-  const fetchPhotos = async () => {
-    setLoadingPhotos(true);
-    try {
-      const { data, error } = await supabase
-        .from('photos')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setPhotos(data || []);
-    } catch (err: any) {
-      console.error(err);
-    } finally {
-      setLoadingPhotos(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 'photos') {
-      fetchPhotos();
-    }
-  }, [activeTab]);
-
-  const handleApprovePhoto = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('photos')
-        .update({ is_approved: true })
-        .eq('id', id);
-
-      if (error) throw error;
-      setToastMessage('Foto aprobada');
-      fetchPhotos();
-    } catch (err: any) {
-      alert(`Error al aprobar: ${err.message}`);
-    }
-  };
-
-  const handleDeletePhoto = async (id: string, filePath: string) => {
-    if (!window.confirm('¿Seguro que querés eliminar permanentemente esta foto?')) return;
-    try {
-      // 1. Delete from storage bucket
-      const { error: storageError } = await supabase.storage
-        .from('photos')
-        .remove([filePath]);
-
-      if (storageError) {
-        console.warn('Advertencia al borrar del storage:', storageError.message);
-      }
-
-      // 2. Delete from db
-      const { error: dbError } = await supabase
-        .from('photos')
-        .delete()
-        .eq('id', id);
-
-      if (dbError) throw dbError;
-
-      setToastMessage('Foto eliminada correctamente');
-      fetchPhotos();
-    } catch (err: any) {
-      alert(`Error al eliminar: ${err.message}`);
-    }
-  };
 
   if (checkingAuth) {
     return (
@@ -413,20 +321,6 @@ export function AdminDashboardPage() {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-sans font-semibold tracking-wider uppercase w-full cursor-pointer transition-all ${activeTab === 'rsvps' ? 'bg-sage-500 text-white shadow-sm' : 'bg-white text-sage-600 hover:bg-sage-50 border border-sage-200/50'}`}
           >
             <Users className="w-4 h-4" /> Invitados ({totalRsvpCount})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('songs')}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-sans font-semibold tracking-wider uppercase w-full cursor-pointer transition-all ${activeTab === 'songs' ? 'bg-sage-500 text-white shadow-sm' : 'bg-white text-sage-600 hover:bg-sage-50 border border-sage-200/50'}`}
-          >
-            <MusicIcon className="w-4 h-4" /> Canciones
-          </button>
-
-          <button
-            onClick={() => setActiveTab('photos')}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-sans font-semibold tracking-wider uppercase w-full cursor-pointer transition-all ${activeTab === 'photos' ? 'bg-sage-500 text-white shadow-sm' : 'bg-white text-sage-600 hover:bg-sage-50 border border-sage-200/50'}`}
-          >
-            <Camera className="w-4 h-4" /> Galería Fotos
           </button>
         </aside>
 
@@ -838,6 +732,7 @@ export function AdminDashboardPage() {
                         <th className="p-3 text-center">Lugares</th>
                         <th className="p-3">Restricción Alimentaria</th>
                         <th className="p-3">Comentarios</th>
+                        <th className="p-3 text-right">Acciones</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-sage-100 bg-white">
@@ -864,70 +759,11 @@ export function AdminDashboardPage() {
                           <td className="p-3 max-w-[200px] truncate text-sage-500" title={r.comments}>
                             {r.comments || '-'}
                           </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: SONGS */}
-          {activeTab === 'songs' && (
-            <div className="bg-white border border-sage-200/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between gap-4 mb-6">
-                <h3 className="font-serif text-lg text-sage-800 font-medium tracking-wide flex items-center gap-2">
-                  <MusicIcon className="w-5 h-5 text-sage-500" /> Sugerencias de Música
-                </h3>
-              </div>
-
-              <div className="overflow-x-auto border border-sage-100 rounded-xl">
-                {loadingSongs ? (
-                  <div className="py-12 text-center text-xs text-sage-500 font-sans">
-                    Cargando canciones...
-                  </div>
-                ) : songs.length === 0 ? (
-                  <div className="py-12 text-center text-xs text-sage-500 font-sans">
-                    No hay sugerencias de canciones registradas.
-                  </div>
-                ) : (
-                  <table className="w-full text-left border-collapse text-xs font-sans">
-                    <thead>
-                      <tr className="bg-sage-50/50 border-b border-sage-100 text-[10px] font-bold text-sage-600 uppercase tracking-wider">
-                        <th className="p-3">Invitado</th>
-                        <th className="p-3">Canción / Artista</th>
-                        <th className="p-3">Enlace</th>
-                        <th className="p-3">Comentario</th>
-                        <th className="p-3 text-right">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-sage-100 bg-white">
-                      {songs.map((song) => (
-                        <tr key={song.id} className="hover:bg-sage-50/20 text-sage-800">
-                          <td className="p-3 font-semibold">{song.suggester_name}</td>
-                          <td className="p-3">
-                            <span className="font-medium block text-sage-800">{song.title}</span>
-                            <span className="text-sage-500 text-[10px] block">{song.artist}</span>
-                          </td>
-                          <td className="p-3">
-                            {song.link ? (
-                              <a 
-                                href={song.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-sage-500 hover:text-sage-700 flex items-center gap-1 hover:underline"
-                              >
-                                Spotify/YT <ExternalLink className="w-3 h-3" />
-                              </a>
-                            ) : '-'}
-                          </td>
-                          <td className="p-3 text-sage-500">{song.comment || '-'}</td>
                           <td className="p-3 text-right">
                             <button
-                              onClick={() => handleDeleteSong(song.id)}
-                              className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer inline-flex"
-                              title="Eliminar sugerencia"
+                              onClick={() => handleDeleteRsvp(r.id, `${r.first_name} ${r.last_name}`)}
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors cursor-pointer inline-flex"
+                              title="Eliminar invitado"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -938,73 +774,6 @@ export function AdminDashboardPage() {
                   </table>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* TAB 4: PHOTOS */}
-          {activeTab === 'photos' && (
-            <div className="bg-white border border-sage-200/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between gap-4 mb-6">
-                <h3 className="font-serif text-lg text-sage-800 font-medium tracking-wide flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-sage-500" /> Galería de Fotos Compartidas
-                </h3>
-              </div>
-
-              {loadingPhotos ? (
-                <div className="py-12 text-center text-xs text-sage-500 font-sans">
-                  Cargando galería...
-                </div>
-              ) : photos.length === 0 ? (
-                <div className="py-12 text-center text-xs text-sage-500 font-sans">
-                  Aún no se subieron fotografías.
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {photos.map((photo) => (
-                    <div 
-                      key={photo.id} 
-                      className="border border-sage-100 rounded-xl overflow-hidden bg-sage-50/50 shadow-sm relative group flex flex-col justify-between"
-                    >
-                      {/* Status indicator badge */}
-                      <span className={`absolute top-2 left-2 z-10 text-[9px] font-bold px-2 py-0.5 rounded-full select-none ${photo.is_approved ? 'bg-green-500/90 text-white' : 'bg-amber-500/90 text-white animate-pulse'}`}>
-                        {photo.is_approved ? 'APROBADA' : 'PENDIENTE'}
-                      </span>
-
-                      {/* Image Thumbnail */}
-                      <a href={photo.url} target="_blank" rel="noopener noreferrer" className="block relative aspect-square overflow-hidden bg-black/5">
-                        <img 
-                          src={photo.url} 
-                          alt="Invitado" 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </a>
-
-                      {/* Controls */}
-                      <div className="p-2 bg-white border-t border-sage-100 flex items-center justify-between select-none">
-                        {!photo.is_approved ? (
-                          <button
-                            onClick={() => handleApprovePhoto(photo.id)}
-                            className="bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 rounded-lg px-2.5 py-1 text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                            title="Aprobar fotografía"
-                          >
-                            <CheckCircle className="w-3.5 h-3.5" /> Aprobar
-                          </button>
-                        ) : (
-                          <span className="text-[10px] text-sage-400 font-sans italic py-1 pl-1">Aprobada</span>
-                        )}
-
-                        <button
-                          onClick={() => handleDeletePhoto(photo.id, photo.file_path)}
-                          className="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-                          title="Eliminar de forma permanente"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           )}
 
