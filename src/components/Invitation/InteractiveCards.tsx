@@ -63,17 +63,17 @@ export function InteractiveCards({
   }, [rsvpDeadlineDate, rsvpDeadlineTime]);
 
   // Card 5: RSVP Form & Wizard States
-  const [rsvpStep, setRsvpStep] = useState<1 | 2 | 3>(1);
+  const [rsvpStep, setRsvpStep] = useState<1 | 2>(1);
   const [rsvpForm, setRsvpForm] = useState({
+    firstName: '',
+    lastName: '',
+    dni: '',
+    phone: '',
     attending: 'yes',
-    guestCount: 1,
     dietary: 'Ninguna',
     dietaryDetail: '',
     comments: ''
   });
-  const [guests, setGuests] = useState<{ firstName: string; lastName: string; dni: string; phone: string }[]>([
-    { firstName: '', lastName: '', dni: '', phone: '' }
-  ]);
   const [rsvpLoading, setRsvpLoading] = useState(false);
   const [rsvpSuccess, setRsvpSuccess] = useState(false);
   const [rsvpError, setRsvpError] = useState<string | null>(null);
@@ -152,45 +152,30 @@ export function InteractiveCards({
     setRsvpLoading(true);
 
     try {
-      if (rsvpForm.attending === 'no') {
-        const { error } = await supabase
-          .from('rsvps')
-          .insert({
-            first_name: guests[0].firstName,
-            last_name: guests[0].lastName,
-            dni: guests[0].dni,
-            phone: guests[0].phone || null,
-            attending: false,
-            guest_count: 1,
-            dietary_restrictions: 'Ninguna',
-            comments: rsvpForm.comments || null
-          });
-        if (error) throw error;
-      } else {
-        // Insert all guests
-        for (let i = 0; i < guests.length; i++) {
-          const guest = guests[i];
-          const { error } = await supabase
-            .from('rsvps')
-            .insert({
-              first_name: guest.firstName,
-              last_name: guest.lastName,
-              dni: guest.dni,
-              phone: guest.phone || null,
-              attending: true,
-              guest_count: guests.length,
-              dietary_restrictions: rsvpForm.dietary === 'Alergias' ? rsvpForm.dietaryDetail : rsvpForm.dietary,
-              comments: i === 0 ? rsvpForm.comments || null : `Acompañante de ${guests[0].firstName} ${guests[0].lastName}`
-            });
-          if (error) throw error;
-        }
-      }
+      const { error } = await supabase
+        .from('rsvps')
+        .insert({
+          first_name: rsvpForm.firstName,
+          last_name: rsvpForm.lastName,
+          dni: rsvpForm.dni,
+          phone: rsvpForm.phone || null,
+          attending: rsvpForm.attending === 'yes',
+          guest_count: 1,
+          dietary_restrictions: rsvpForm.attending === 'yes'
+            ? (rsvpForm.dietary === 'Alergias' ? rsvpForm.dietaryDetail : rsvpForm.dietary)
+            : 'Ninguna',
+          comments: rsvpForm.comments || null
+        });
+
+      if (error) throw error;
 
       setRsvpSuccess(true);
-      setGuests([{ firstName: '', lastName: '', dni: '', phone: '' }]);
       setRsvpForm({
+        firstName: '',
+        lastName: '',
+        dni: '',
+        phone: '',
         attending: 'yes',
-        guestCount: 1,
         dietary: 'Ninguna',
         dietaryDetail: '',
         comments: ''
@@ -331,7 +316,24 @@ export function InteractiveCards({
       {/* 4. Modal Confirmar Asistencia (RSVP) */}
       <Modal 
         isOpen={activeModal === 'rsvp'} 
-        onClose={() => { if (!rsvpLoading) { setActiveModal(null); setRsvpSuccess(false); setRsvpError(null); setRsvpStep(1); setGuests([{ firstName: '', lastName: '', dni: '', phone: '' }]); } }} 
+        onClose={() => { 
+          if (!rsvpLoading) { 
+            setActiveModal(null); 
+            setRsvpSuccess(false); 
+            setRsvpError(null); 
+            setRsvpStep(1); 
+            setRsvpForm({
+              firstName: '',
+              lastName: '',
+              dni: '',
+              phone: '',
+              attending: 'yes',
+              dietary: 'Ninguna',
+              dietaryDetail: '',
+              comments: ''
+            }); 
+          } 
+        }} 
         title="Confirmar asistencia"
       >
         {rsvpSuccess ? (
@@ -363,9 +365,8 @@ export function InteractiveCards({
                   <button
                     type="button"
                     onClick={() => {
-                      setRsvpForm(prev => ({ ...prev, attending: 'no', guestCount: 1 }));
-                      setGuests([{ firstName: '', lastName: '', dni: '', phone: '' }]);
-                      setRsvpStep(3);
+                      setRsvpForm(prev => ({ ...prev, attending: 'no' }));
+                      setRsvpStep(2);
                     }}
                     className="invite-button"
                     style={{ background: 'var(--pale)', color: 'var(--ink)', width: '100%', justifyContent: 'center', height: '48px', fontSize: '12px', letterSpacing: '0.1em', border: '1px solid var(--line)' }}
@@ -376,46 +377,8 @@ export function InteractiveCards({
               </div>
             )}
 
-            {/* Paso 2: Preguntar Cantidades */}
+            {/* Paso 2: Renderizar Campos de Persona Única */}
             {rsvpStep === 2 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '10px 0', textAlign: 'center' }}>
-                <p className="form-note" style={{ color: 'var(--sage)', marginBottom: '10px' }}>
-                  ¿Cuántas personas asistirán en tu grupo? (Contándote a vos)
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', margin: '10px 0' }}>
-                  {[1, 2, 3, 4, 5, 6].map(n => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => {
-                        setRsvpForm(prev => ({ ...prev, guestCount: n }));
-                        setGuests(prev => {
-                          const newGuests = [];
-                          for (let i = 0; i < n; i++) {
-                            newGuests.push(prev[i] || { firstName: '', lastName: '', dni: '', phone: '' });
-                          }
-                          return newGuests;
-                        });
-                        setRsvpStep(3);
-                      }}
-                      className="qty-circle-btn"
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setRsvpStep(1)}
-                  style={{ background: 'none', border: 0, textDecoration: 'underline', color: 'var(--sage)', fontSize: '11px', cursor: 'pointer' }}
-                >
-                  Volver
-                </button>
-              </div>
-            )}
-
-            {/* Paso 3: Renderizar Campos Dinámicos */}
-            {rsvpStep === 3 && (
               <form onSubmit={handleRsvpSubmit}>
                 {rsvpError && (
                   <p style={{ color: 'red', fontSize: '11px', marginBottom: '10px', textAlign: 'center' }}>
@@ -423,80 +386,62 @@ export function InteractiveCards({
                   </p>
                 )}
 
-                <div style={{ maxHeight: '350px', overflowY: 'auto', paddingRight: '4px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                  {guests.map((guest, idx) => (
-                    <div key={idx} style={{ padding: '16px', border: '1px solid var(--line)', borderRadius: '8px', background: 'rgba(253, 252, 248, 0.4)' }}>
-                      <span style={{ fontSize: '10px', fontWeight: 'bold', color: 'var(--sage)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '12px' }}>
-                        {rsvpForm.attending === 'no' ? 'Tus Datos' : `Invitado ${idx + 1} ${idx === 0 ? '(Tú)' : ''}`}
-                      </span>
-                      
-                      <div className="form-grid" style={{ marginBottom: '10px' }}>
-                        <label>
-                          Nombre *
-                          <input
-                            type="text"
-                            required
-                            disabled={rsvpLoading}
-                            placeholder="Nombre"
-                            value={guest.firstName}
-                            onChange={e => {
-                              const newGuests = [...guests];
-                              newGuests[idx].firstName = e.target.value;
-                              setGuests(newGuests);
-                            }}
-                          />
-                        </label>
-                        <label>
-                          Apellido *
-                          <input
-                            type="text"
-                            required
-                            disabled={rsvpLoading}
-                            placeholder="Apellido"
-                            value={guest.lastName}
-                            onChange={e => {
-                              const newGuests = [...guests];
-                              newGuests[idx].lastName = e.target.value;
-                              setGuests(newGuests);
-                            }}
-                          />
-                        </label>
-                      </div>
-
-                      <div className="form-grid">
-                        <label>
-                          DNI *
-                          <input
-                            type="text"
-                            required
-                            disabled={rsvpLoading}
-                            placeholder="Número de DNI"
-                            value={guest.dni}
-                            onChange={e => {
-                              const newGuests = [...guests];
-                              newGuests[idx].dni = e.target.value;
-                              setGuests(newGuests);
-                            }}
-                          />
-                        </label>
-                        <label>
-                          Teléfono {idx === 0 ? '*' : '(Opcional)'}
-                          <input
-                            type="tel"
-                            required={idx === 0}
-                            disabled={rsvpLoading}
-                            placeholder="Ej: 11223344"
-                            value={guest.phone}
-                            onChange={e => {
-                              const newGuests = [...guests];
-                              newGuests[idx].phone = e.target.value;
-                              setGuests(newGuests);
-                            }}
-                          />
-                        </label>
-                      </div>
+                <div style={{ maxHeight: '380px', overflowY: 'auto', paddingRight: '4px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div style={{ padding: '16px', border: '1px solid var(--line)', borderRadius: '8px', background: 'rgba(253, 252, 248, 0.4)' }}>
+                    <span style={{ fontSize: '10px', fontWeight: 'bold', color: 'var(--sage)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '12px' }}>
+                      {rsvpForm.attending === 'no' ? 'Tus Datos' : 'Datos Personales'}
+                    </span>
+                    
+                    <div className="form-grid" style={{ marginBottom: '10px' }}>
+                      <label>
+                        Nombre *
+                        <input
+                          type="text"
+                          required
+                          disabled={rsvpLoading}
+                          placeholder="Nombre"
+                          value={rsvpForm.firstName}
+                          onChange={e => setRsvpForm(prev => ({ ...prev, firstName: e.target.value }))}
+                        />
+                      </label>
+                      <label>
+                        Apellido *
+                        <input
+                          type="text"
+                          required
+                          disabled={rsvpLoading}
+                          placeholder="Apellido"
+                          value={rsvpForm.lastName}
+                          onChange={e => setRsvpForm(prev => ({ ...prev, lastName: e.target.value }))}
+                        />
+                      </label>
                     </div>
-                  ))}
+
+                    <div className="form-grid">
+                      <label>
+                        DNI *
+                        <input
+                          type="text"
+                          required
+                          disabled={rsvpLoading}
+                          placeholder="Número de DNI"
+                          value={rsvpForm.dni}
+                          onChange={e => setRsvpForm(prev => ({ ...prev, dni: e.target.value }))}
+                        />
+                      </label>
+                      <label>
+                        Teléfono *
+                        <input
+                          type="tel"
+                          required
+                          disabled={rsvpLoading}
+                          placeholder="Ej: 11223344"
+                          value={rsvpForm.phone}
+                          onChange={e => setRsvpForm(prev => ({ ...prev, phone: e.target.value }))}
+                        />
+                      </label>
+                    </div>
+                  </div>
 
                   {rsvpForm.attending === 'yes' && (
                     <>
@@ -551,7 +496,7 @@ export function InteractiveCards({
                   <button
                     type="button"
                     disabled={rsvpLoading}
-                    onClick={() => setRsvpStep(rsvpForm.attending === 'yes' ? 2 : 1)}
+                    onClick={() => setRsvpStep(1)}
                     className="invite-button"
                     style={{ background: 'var(--pale)', color: 'var(--ink)', width: '35%', justifyContent: 'center', border: '1px solid var(--line)' }}
                   >
